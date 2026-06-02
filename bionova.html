@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BioNova — Sustentabilidade e Empreendedorismo</title>
+  <meta name="description" content="Protótipo responsivo do site BioNova: horários de coleta, mapa de descarte, educação ambiental e contato." />
+  <link rel="icon" type="image/png" href="logo bionova.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root{
+      --bg-top:#5b9347;
+      --bg-mid:rgb(127, 153, 55);
+      --bg-bot:#6cab55;
+      --card:#33473c;         
+      --card-2:#4e745e;        
+      --text:#ecf7ee;
+      --muted:#ffffffcc;
+      --brand:#2ec971;
+      --brand-2:#ffd74a;
+      --stroke:rgba(255,255,255,.08);
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --input:#000000;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,"Noto Sans";
+      color:var(--text);
+      background:linear-gradient(180deg,var(--bg-top) 0%,var(--bg-mid) 50%,var(--bg-bot) 100%);
+      background-attachment: fixed;
+    }
+    a{color:inherit;text-decoration:none}
+
+    .container{width:min(1100px,92vw);margin:auto}
+
+    .nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(8px);background:rgba(10,15,12,.55);border-bottom:1px solid var(--stroke)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+    .brand .logo{width:30px;height:30px;display:grid;place-items:center;background:
+      radial-gradient(circle at 30% 30%, var(--brand) 0 55%, transparent 56%),
+      radial-gradient(circle at 70% 70%, var(--brand-2) 0 55%, transparent 56%);
+      border-radius:50%;outline:2px solid #fff}
+    .nav-links{display:flex;gap:18px}
+    .menu-btn{display:none}
+
+    
+    .hero{padding:64px 0 36px;position:relative}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:28px}
+    .tag{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--stroke);border-radius:999px;color:#fff;font-size:14px}
+    h1{
+      word-break: normal;
+      overflow-wrap: break-word;
+      hyphens: auto;font-size:clamp(28px,4vw,48px);line-height:1.07;margin:.4rem 0 1rem}
+    .lead{font-size:clamp(16px,2.2vw,19px);color:#000}
+    .cta{display:flex;gap:12px;margin-top:18px}
+    .btn{padding:12px 16px;border-radius:999px;border:1px solid var(--stroke);font-weight:600;transition:.2s ease;cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg,#2ec971 0%,#3cf086 100%);color:#072812;border:none}
+    .btn.secondary{background:#fff;color:#0a0a0a}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;background:#101612;border:1px solid var(--stroke);border-radius:var(--radius)}
+
+    
+    .card{
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;background:linear-gradient(180deg,var(--card) 0%,var(--card-2) 100%);border:1px solid var(--stroke);border-radius:var(--radius);box-shadow:var(--shadow)}
+    section{padding:52px 0;scroll-margin-top:80px}
+    h2{font-size:clamp(22px,3.2vw,30px);margin:0 0 18px}
+    .grid{display:grid;gap:18px}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    .muted{color:var(--muted)}
+
+    
+    .feature{display:flex;gap:14px;padding:16px;border:1px solid var(--stroke);border-radius:14px}
+    .icon{width:40px;height:40px;border-radius:12px;background:radial-gradient(circle at 30% 30%, var(--brand) 0 60%, #194a2e 61% 100%);display:grid;place-items:center;flex:0 0 40px}
+    .feature h3{margin:2px 0 4px;font-size:18px}
+
+    
+    .input, input[type="text"], input[type="date"], select, textarea{
+      width:100%;padding:10px;margin:6px 0;border-radius:10px;border:1px solid var(--stroke);background:var(--input);color:var(--text)
+    }
+
+    
+    .accordion{display:flex;flex-direction:column;gap:12px}
+    .acc-btn{
+      width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--stroke);
+      background:rgba(0,0,0,.18);color:var(--text);font-weight:600;cursor:pointer
+    }
+    .acc-content{max-height:0;overflow:hidden;transition:max-height .35s ease;border-left:3px solid var(--brand);padding:0 12px;border-radius:8px;background:rgba(0,0,0,.12)}
+    .acc-content.open{padding:10px 12px}
+
+   
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .kpi{padding:18px;border:1px solid var(--stroke);border-radius:14px;text-align:center}
+    .kpi .value{font-size:clamp(26px,4vw,36px);font-weight:800}
+    .kpi .label{color:var(--muted)}
+
+    footer{padding:36px 0;border-top:1px solid var(--stroke);color:#fff}
+
+    
+    @media (max-width:900px){
+      .hero-grid{grid-template-columns:1fr}
+      .grid.cols-3{grid-template-columns:1fr}
+      .grid.cols-2{grid-template-columns:1fr}
+        
+    }
+  
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.4rem;
+        line-height: 1.3;
+      }
+
+      .nav-inner {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .menu-btn {
+        display: inline-block;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+        margin-top: 10px;
+        padding: 10px 0;
+        border-top: 1px solid var(--stroke);
+      }
+
+      .nav-links a {
+        padding: 8px 0;
+        display: block;
+      }
+
+      .hero {
+        padding: 30px 0 15px;
+        text-align: center;
+      }
+
+      .hero-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .hero h1 {
+        font-size: 1.6rem;
+        line-height: 1.3;
+        margin: 12px 0 14px;
+      }
+
+      .hero .lead {
+        font-size: 1rem;
+        line-height: 1.5;
+        padding: 0 10px;
+      }
+
+      .hero .card {
+        margin: 0 auto 20px;
+        width: 90%;
+        max-width: 300px;
+        aspect-ratio: 1/1;
+      }
+
+      .hero .card img {
+        width: 80%;
+        height: auto;
+      }
+
+      .cta {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .badge {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 0.85rem;
+      }
+
+      .grid.cols-3,
+      .grid.cols-2,
+      .kpis {
+        grid-template-columns: 1fr;
+      }
+
+      img, iframe {
+        max-width: 100%;
+        height: auto;
+      }
+
+      form, .card {
+        padding: 14px;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+      h2 {
+        font-size: 1.3rem;
+      }
+      h3 {
+        font-size: 1.1rem;
+      }
+    }
+
+    .card {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    button, .btn {
+      transition: all 0.3s ease;
+    }
+
+    button:hover, .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    button:active, .btn:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ... (restante do seu código HTML original permanece exatamente igual) ... -->
+  
+  <script>
+    /* ... (seu código JavaScript original permanece exatamente igual) ... */
+  </script>
+</body>
+</html>
+
+
+<style>
+
+
+.card {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+
+.card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+
+button, .btn {
+  transition: all 0.3s ease;
+}
+
+
+button:hover, .btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+
+button:active, .btn:active {
+  transform: scale(0.95);
+}
+</style>
+
+</head>
+<body>
+
+  
+  <nav class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <span>BioNova</span>
+      </div>
+      <button class="menu-btn btn secondary" aria-label="Abrir menu" onclick="toggleMenu()">Menu</button>
+      <div class="nav-links" id="menu">
+        <a href="#home">Início</a>
+        <a href="#problemas">Problemas</a>
+        <a href="#solucao">Solução</a>
+        <a href="#funcionalidades">Funcionalidades</a>
+        <a href="#educacao">Educação</a>
+        <a href="#contato">Contato</a>
+      </div>
+    </div>
+  </nav>
+
+ 
+ <header id="home" class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="tag">Hackathon • Sustentabilidade & Empreendedorismo</span>
+      <h1>BioNova — tecnologia para coleta, descarte e educação ambiental</h1>
+      <p class="lead">Simplificamos o descarte correto de resíduos e entulho, reduzimos impactos e aproximamos cidadãos, profissionais e prefeituras.</p>
+      <div class="cta">
+        <a href="#funcionalidades" class="btn primary">Ver funcionalidades</a>
+        <a href="#contato" class="btn primary">Falar com a equipe</a>
+      </div>
+      <div class="badge" style="margin-top:14px">Desenvolvido por: Christian 3°C </div>
+    </div>
+    <div class="card" style="display:grid;place-items:center;aspect-ratio:4/3;border-radius:var(--radius)">
+      
+      <div style="width:100%;max-width:350px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;">
+  <img src="https://i.imgur.com/6SIFXHV.png" alt="Logo BioNova" style="width:100%;height:auto;object-fit:contain;"> 
+      </div>
+    </div>
+  </div>
+</header>
+
+
+ 
+<section id="dados">
+  <div class="container">
+    <h2>Por que isso importa</h2>
+
+    <div class="kpis">
+      <div class="kpi card">
+        <div class="value">31,9%</div>
+        <div class="label">dos municípios usam lixões</div>
+      </div>
+      <div class="kpi card">
+        <div class="value">&lt; 4%</div>
+        <div class="label">de reciclagem urbana</div>
+      </div>
+      <div class="kpi card">
+        <div class="value">1M ha</div>
+        <div class="label">queimados no 1º semestre/2025</div>
+      </div>
+    </div>
+
+    <div class="fonte-wrapper">
+      <div class="card fonte">
+        <p>Dados retirados do site oficial do 
+          <a href="https://www.ibge.gov.br/" target="_blank" rel="noopener noreferrer">IBGE</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  
+  .fonte-wrapper {
+    text-align: center;
+    margin-top: 15px; /
+  }
+
+  
+  .card.fonte {
+    display: inline-block; 
+    padding: 8px 12px;
+    background-color: rgba(0, 0, 0, 0.4); 
+    border-radius: 10px;
+    font-size: 0.9rem;
+  }
+
+  
+  .card.fonte a {
+    color: #fff;
+    text-decoration: underline;
+  }
+</style>
+
+
+  
+  <section id="problemas">
+    <div class="container">
+      <h2>Problemas que atacamos</h2>
+      <div class="grid cols-2">
+        <div class="card" style="padding:18px">
+          <h3 style="margin-top:0">Falta de interesse no descarte de entulho</h3>
+          <ul class="list">
+            <li>Desconhecimento sobre onde e como descartar.</li>
+            <li>Falta de campanhas educativas.</li>
+            <li>Percepção de que “não é responsabilidade pessoal”.</li>
+            <li>Dificuldade de acesso a pontos de descarte.</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:18px">
+          <h3 style="margin-top:0">Outros impactos</h3>
+          <ul class="list">
+            <li>Poluição e acúmulo de lixo.</li>
+            <li>Assoreamento de rios e córregos.</li>
+            <li>Queimadas e lixões a céu aberto.</li>
+            <li>Descarte irregular agrava mudanças climáticas.</li>
+          </ul>
+        </div>
+      </div>
+
+      
+   <div class="accordion" style="margin-top:16px">
+  <!-- Botão 1 -->
+  <div class="acc-item">
+    <button class="acc-btn" onclick="toggleAcc(this)">
+      Por que isso acontece? <span>+</span>
+    </button>
+    <div class="acc-content">
+      <p class="muted">
+        Falta de informação e conveniência; baixa percepção de benefício; pouca integração entre mapas, horários e serviços de retirada.
+      </p>
+    </div>
+  </div>
+
+<!-- Botão 2 -->
+<div class="acc-item">
+  <button class="acc-btn" onclick="toggleAcc(this)">
+    O que a BioNova faz a respeito? <span>+</span>
+  </button>
+  <div class="acc-content">
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <img src="https://ciclovivo.com.br/wp-content/uploads/2016/11/IMG_7966.jpg" alt="Caminhão Bionova" style="max-width:220px;border-radius:8px">
+      <p class="muted" style="flex:1; font-size:1.2rem; line-height:1.5; margin:0">
+        Centraliza horários oficiais, agendamento, guia de separação, educação ambiental e canal com profissionais e prefeituras.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+  
+  <section id="solucao">
+    <div class="container">
+      <h2>Solução BioNova</h2>
+      <div class="grid cols-3">
+        <div class="feature card"><div class="icon">🗺️</div><div><h3>Mapa unificado</h3><p class="muted">Pontos de descarte próximos a você.</p></div></div>
+        <div class="feature card"><div class="icon">⏱️</div><div><h3>Horários e rota</h3><p class="muted">Acompanhe a coleta em tempo quase real.</p></div></div>
+        <div class="feature card"><div class="icon">📚</div><div><h3>Educação & saúde</h3><p class="muted">Conteúdos práticos e rápidos.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  
+<section id="funcionalidades">
+  <div class="container">
+    <h2>Funcionalidades principais</h2>
+
+    
+    <div class="grid cols-3">
+      
+      <div class="card" style="padding:16px">
+        <h3>Horários de coleta</h3>
+        <label for="cep">CEP / Endereço</label>
+        <input id="cep" type="text" class="input" placeholder="00000-000">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" onclick="buscarCep()">Buscar</button>
+          <button class="btn" onclick="salvarCep()">Salvar CEP</button>
+        </div>
+        <div id="tabela-horarios" style="margin-top:10px"></div>
+      </div>
+
+      
+      <div class="card" style="padding:16px">
+        <h3>Mapa de pontos de descarte</h3>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m12!1m8!1m3!1d117148.92949239693!2d-46.4699486!3d-23.4278331!3m2!1i1024!2i768!4f13.1!2m1!1spontos%20de%20descarte%20de%20lixo%20guarulhos!5e0!3m2!1spt-BR!2sbr!4v1755253526222!5m2!1spt-BR!2sbr"
+          width="100%" height="200" style="border:0" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="muted" style="margin-top:8px">Tipos: Entulho • Eletrônicos • Óleo • Volumosos</div>
+      </div>
+
+      
+      <div class="card" style="padding:16px">
+        <h3>Agendamento de coleta</h3>
+        <form onsubmit="return validarAgendamento(event)">
+          <label for="data">Data</label>
+          <input id="data" type="date" style="width:100%;padding:10px;margin:6px 0;border-radius:10px;border:1px solid var(--stroke);background:#0f1713;color:var(--text)">
+          
+          <label for="tipo">Tipo de resíduo</label>
+          <select id="tipo" style="width:100%;padding:10px;margin:6px 0;border-radius:10px;border:1px solid var(--stroke);background:#0f1713;color:var(--text)">
+            <option value="">Selecione</option>
+            <option>Entulho</option>
+            <option>Reciclável</option>
+            <option>Eletrônico</option>
+            <option>Perigoso</option>
+          </select>
+          <button type="submit" class="btn primary">Agendar</button>
+        </form>
+      </div>
+    </div>
+
+   
+    <div class="grid cols-3" style="margin-top:18px">
+      <div class="card feature"><div class="icon">🔔</div><div><h3>Notificações & alertas</h3><p class="muted">Lembretes de coleta e mudanças de rota. <em>(opt-in de privacidade)</em></p></div></div>
+      <div class="card feature"><div class="icon">👤</div><div><h3>Login & personalização</h3><p class="muted">Salve endereços, preferências e histórico de coletas.</p></div></div>
+      <div class="card feature"><div class="icon">💬</div><div><h3>Canal com profissionais</h3><p class="muted">Tire dúvidas e denuncie descarte irregular com poucos cliques.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+ 
+  function buscarCep() {
+    const cep = document.getElementById('cep').value.trim();
+    if (!cep) {
+      alert('Por favor, preencha o campo de CEP antes de buscar.');
+      return;
+    }
+    sampleTable(); 
+  }
+
+  function salvarCep() {
+    const cep = document.getElementById('cep').value.trim();
+    if (!cep) {
+      alert('Por favor, preencha o campo de CEP antes de salvar.');
+      return;
+    }
+    saveCep(); 
+  }
+
+ 
+  function validarAgendamento(event) {
+    event.preventDefault();
+    const data = document.getElementById('data').value.trim();
+    const tipo = document.getElementById('tipo').value.trim();
+
+    if (!data || !tipo) {
+      alert('Por favor, selecione uma data e o tipo de resíduo.');
+      return false;
+    }
+
+    alert('Solicitação registrada com sucesso!');
+    event.target.reset();
+    return true;
+  }
+</script>
+
+
+  <section id="educacao">
+  <div class="container">
+    <h2>Educação Ambiental</h2>
+    <div class="grid cols-3">
+      <article class="card" style="padding:16px">
+        <h3>Guia rápido de separação</h3>
+        <p style="color:#2ecc71">Orgânico, reciclável, rejeito e especiais.</p>
+        <button class="btn primary" onclick="openTip(1)">Ver dicas</button>
+      </article>
+      <article class="card" style="padding:16px">
+        <h3>Perigos do descarte incorreto</h3>
+        <p style="color:#2ecc71">Risco à saúde e contaminação do solo/água.</p>
+        <button class="btn primary" onclick="openTip(2)">Saiba mais</button>
+      </article>
+      <article class="card" style="padding:16px">
+        <h3>Economia circular</h3>
+        <p style="color:#2ecc71">Como transformar resíduos em oportunidade.</p>
+        <button class="btn primary" onclick="openTip(3)">Exemplos</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+ 
+<section id="contato">
+  <div class="container">
+    <h2>Fale com a equipe</h2>
+    <div class="grid cols-2" style="align-items: start; gap: 20px;">
+      
+      
+      <form class="card" style="padding:16px"
+        onsubmit="
+          event.preventDefault();
+          let nome = document.getElementById('nome').value.trim();
+          let email = document.getElementById('email').value.trim();
+          let msg = document.getElementById('msg').value.trim();
+          
+          if (!nome || !email || !msg) {
+            alert('Por favor, preencha todos os campos antes de enviar.');
+            return;
+          }
+          
+          
+          let emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+          if (!emailRegex.test(email)) {
+            alert('Por favor, insira um e-mail válido.');
+            return;
+          }
+
+          alert('Mensagem enviada com sucesso!');
+          this.reset();
+        ">
+        
+        <label for="nome" style="display:block;margin-top:10px">Seu nome</label>
+        <input id="nome" type="text" placeholder="Nome" style="width:100%">
+
+        <label for="email" style="display:block;margin-top:10px">E-mail</label>
+        <input id="email" type="email" placeholder="email@exemplo.com" style="width:100%">
+
+        <label for="msg" style="display:block;margin-top:10px">Mensagem</label>
+        <textarea id="msg" rows="4" placeholder="Como podemos ajudar?" style="width:100%"></textarea>
+
+        <button type="submit" class="btn primary" style="margin-top:12px">Enviar</button>
+      </form>
+
+      
+      <div class="card" style="padding:16px">
+        <h3 style="margin-top:0">Parcerias e contato</h3>
+        <ul class="list" style="display:grid;gap:10px;padding-left:0;list-style:none;margin:0">
+          <li>
+            <a href="https://www.guarulhos.sp.gov.br/contato" target="_blank" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Bras%C3%A3o_de_Guarulhos.png" alt="Prefeitura de Guarulhos" style="width:85px;height:auto">
+              Prefeitura de Guarulhos
+            </a>
+          </li>
+          <li>
+            <a href="https://sp156.prefeitura.sp.gov.br/portal/outros-canais-de-atendimento" target="_blank" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Bras%C3%A3o_da_cidade_de_S%C3%A3o_Paulo.svg/2000px-Bras%C3%A3o_da_cidade_de_S%C3%A3o_Paulo.svg.png" alt="Prefeitura de São Paulo" style="width:85px;height:auto">
+              Prefeitura de São Paulo
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+  <footer><div class="container">© 2025 BioNova — Desenvolvido por Christian Leite.</div></footer>
+
+
+
+<dialog id="tips" class="card" style="border:none;max-width:680px;width:92vw;padding:0; background-color:#1a1a1a; color:white;">
+  <form method="dialog" style="padding:0">
+    <div style="padding:16px 16px 8px; border-bottom:1px solid var(--stroke); display:flex; justify-content:space-between; align-items:center;">
+      <strong style="color:white;">Dicas rápidas</strong>
+      <button class="btn secondary" style="padding:6px 10px">Fechar</button>
+    </div>
+    
+    <div id="tips-content" style="padding:16px; color:#2ecc71;"></div>
+  </form>
+</dialog>
+
+
+
+  <script>
+    function toggleMenu(){
+      const menu=document.getElementById('menu');
+      const isOpen=getComputedStyle(menu).display!=='none';
+      menu.style.display=isOpen?'none':'flex';
+    }
+
+    function toggleAcc(btn){
+      const content=btn.parentElement.querySelector('.acc-content');
+      const isOpen=content.classList.contains('open');
+      if(isOpen){
+        content.style.maxHeight='0px';
+        content.classList.remove('open');
+        btn.querySelector('span').textContent='+';
+      }else{
+        content.classList.add('open');
+        content.style.maxHeight=content.scrollHeight+'px';
+        btn.querySelector('span').textContent='–';
+      }
+    }
+
+    function sampleTable(){
+      const el=document.getElementById('tabela-horarios');
+      const cep=(document.getElementById('cep').value||'00000-000').trim();
+      el.innerHTML=`
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <strong>Resultado para ${cep}</strong>
+          <button class="btn secondary" onclick="exportTable()">Exportar CSV</button>
+        </div>
+        <table>
+          <thead><tr><th>Dia</th><th>Horário</th><th>Tipo</th></tr></thead>
+          <tbody>
+            <tr><td>Segunda</td><td>07:30 – 10:00</td><td>Orgânico</td></tr>
+            <tr><td>Quarta</td><td>07:30 – 10:00</td><td>Reciclável</td></tr>
+            <tr><td>Sexta</td><td>08:00 – 10:30</td><td>Entulho (agendado)</td></tr>
+          </tbody>
+        </table>`;
+    }
+
+    function exportTable(){
+      const rows=[
+        ['Dia','Horário','Tipo'],
+        ['Segunda','07:30 – 10:00','Orgânico'],
+        ['Quarta','07:30 – 10:00','Reciclável'],
+        ['Sexta','08:00 – 10:30','Entulho (agendado)'],
+      ];
+      const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\n');
+      const blob=new Blob([csv],{type:'text/csv'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download='horarios_coleta.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function saveCep(){
+      const input=document.getElementById('cep');
+      localStorage.setItem('bionova_cep',input.value);
+      alert('CEP salvo neste dispositivo.');
+    }
+    function restoreCep(){
+      const saved=localStorage.getItem('bionova_cep');
+      if(saved){document.getElementById('cep').value=saved;}
+    }
+
+    function openTip(id){
+      const dialog=document.getElementById('tips');
+      const content=document.getElementById('tips-content');
+      const tips={
+        1:`<ul class="list"><li>Orgânico: restos de comida e poda.</li><li>Reciclável: papel, plástico, metal e vidro limpos.</li><li>Rejeito: o que não dá para reciclar.</li><li>Especiais: eletrônicos, óleo e pilhas em pontos específicos.</li></ul>`,
+        2:`<p>O descarte irregular favorece vetores de doenças, entope bueiros e contamina solo e água. Procure sempre os pontos corretos.</p>`,
+        3:`<p>Cooperativas, reuso e logística reversa geram renda e reduzem o uso de recursos naturais.</p>`
+      };
+      content.innerHTML=tips[id]||'<p>Conteúdo indisponível.</p>';
+      dialog.showModal();
+    }
+    restoreCep();
+  </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".card").forEach(card => {
+    observer.observe(card);
+  });
+});
+</script>
+
+</body>
+</html>
